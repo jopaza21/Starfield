@@ -1,30 +1,16 @@
-parent [] bol1, bol2, bol3;
-square [] rect1, rect2;
-triangle [] tri1;
+parent [] bol;
+square [] rect;
+tringle [] tri;
 float r, TargetID;
 boolean hasTarget = false;
+boolean gotInit = false;
 int level = 1;
 int rand;
+int num;
+boolean boll = false, rec = false, tre = false;
 void setup() {
+  background(0);
   size(1200, 800);
-  bol1 = new parent[20]; //level one balls
-  bol2 = new parent[25]; //level two balls
-  bol3 = new parent[30]; //level three balls
-  rect1 = new square[10]; // level two squares
-  rect2 = new square[15]; // level three squares
-  tri1 = new triangle[10]; // level three triangles
-  for (int i = 0; i < bol1.length; i++) {
-    r = (float)(Math.random()*2*Math.PI);
-    bol1[i] = new parent(r);
-  }
-  for (int i = 0; i < bol2.length; i++) {
-    r = (float)(Math.random()*2*Math.PI);
-    bol2[i] = new parent(r);
-  }
-  for (int i = 0; i < rect1.length; i++) {
-    r = (float)(Math.random()*2*Math.PI);
-    rect1[i] = new square(r);
-  }
 }
 void draw() {
   background(0);
@@ -35,37 +21,80 @@ void draw() {
     level2();
   }
 }
+void init(int ball, int square, int triangle) {
+  bol = new parent[ball];
+  rect = new square[square];
+  tri = new tringle[triangle];
+  for(int i = 0; i < bol.length; i++) { r = (float)(Math.random()*2*Math.PI); bol[i] = new parent(r); }
+  for(int i = 0; i < rect.length; i++) { r = (float)(Math.random()*2*Math.PI); rect[i] = new square(r); }
+  for(int i = 0; i < tri.length; i++) { r = (float)(Math.random()*2*Math.PI); tri[i] = new tringle(r); }
+}
+void interfc() {
+  fill(50);
+  rectMode(CENTER);
+  rect(1100,400,150,750);
+  fill(255);
+  textSize(17.5);
+  text("TARGET", 1070, 60);
+}
 void level1() {
-  if (hasTarget == false) {
-    TargetID = bol1[(int)(Math.random()*bol1.length)].myID;
+  interfc();
+  if(gotInit == false) {
+    init(10,0,0);
+    gotInit = true;
+  }
+  if(hasTarget == false) {
+    num = (int)(Math.random()*bol.length);
+    TargetID = bol[num].myID;
     hasTarget = true;
   }
-  for (int i = 0; i < bol1.length; i++) {
-    bol1[i].checker();
-    bol1[i].move();
-    bol1[i].show();
+  if(hasTarget == true) {
+    fill(bol[num].myColor);
+    ellipse(1100,110,60,60);
+  }
+  for (int i = 0; i < bol.length; i++) {
+    bol[i].checker();
+    bol[i].move();
+    bol[i].show();
   }
 }
 void level2() {
+  interfc();
+  if(gotInit == false) {
+    init(3,4,0);
+    gotInit = true;
+  }
   if (hasTarget == false) {
     rand = (int)(Math.random()*2);
     if (rand == 0) { 
-      TargetID = bol2[(int)(Math.random()*bol2.length)].myID;
+      num = (int)(Math.random()*bol.length);
+      TargetID = bol[num].myID;
+      boll = true;
     }
     if (rand == 1) { 
-      TargetID = rect1[(int)(Math.random()*rect1.length)].myID;
+      num = (int)(Math.random()*rect.length);
+      TargetID = rect[num].myID;
+      rec = true;
     }
     hasTarget = true;
   }
-  for (int i = 0; i < bol2.length; i++) {
-    bol2[i].checker();
-    bol2[i].move();
-    bol2[i].show();
+  if(boll == true) {
+    fill(bol[num].myColor);
+    ellipse(1100,75,30,30);
   }
-  for (int i = 0; i < rect1.length; i++) {
-    rect1[i].checker();
-    rect1[i].move();
-    rect1[i].show();
+  if(rec == true) {
+    fill(rect[num].myColor);
+    ellipse(1100,76,30,30);
+  }
+  for (int i = 0; i < bol.length; i++) {
+    bol[i].checker();
+    bol[i].move();
+    bol[i].show();
+  }
+  for (int i = 0; i < rect.length; i++) {
+    rect[i].checker();
+    rect[i].move();
+    rect[i].show();
   }
 }
 
@@ -83,7 +112,7 @@ class parent {
     myID = (float)(Math.random()*100000);
   }
   public void move() {
-    if (myX < 0 || myX > 1200) {
+    if (myX < 0 || myX > 1000) {
       myRun = -myRun;
     }
     if (myY < 0 || myY > 800) {
@@ -96,6 +125,7 @@ class parent {
     if (mousePressed) {
       if (mouseX > myX - 15 && mouseX < myX + 15 && mouseY > myY - 15 && mouseY < myY + 15) {
         if (TargetID == myID) {
+          gotInit = false;
           level++;
         }
       }
@@ -115,29 +145,10 @@ class square extends parent {
     myY = 400;
     myRun = (float)(Math.cos(rad)); 
     myRise = (float)(Math.sin(rad));
-    mySpeed = (float)(Math.random()*10);
+    mySpeed = 1;
     myColor = color((int)(Math.random()*256), (int)(Math.random()*256), (int)(Math.random()*256));
     mySize = 20;
     myID = (float)(Math.random()*100000);
-  }
-  public void checker() {
-    if (mousePressed) {
-      if (mouseX > myX - 15 && mouseX < myX + 15 && mouseY > myY - 15 && mouseY < myY + 15) {
-        if (TargetID == myID) {
-          level++;
-        }
-      }
-    }
-  }
-  public void move() {
-    if (myX < 10 || myX > 1190) { 
-      myRun = -myRun;
-    }
-    if (myY < 10 || myY > 790) { 
-      myRise = -myRise;
-    }
-    myX += myRun * mySpeed;
-    myY += myRise * mySpeed;
   }
   public void show() {
     fill(myColor);
@@ -146,11 +157,9 @@ class square extends parent {
   }
 }
 
-class triangle extends parent {
-  triangle(float rad) {
+class tringle extends parent {
+  tringle(float rad) {
     super(rad);
-  }
-}
     myColor = color((float)(Math.random()*255), (float)(Math.random()*255), (float)(Math.random()*255));
     mySize = 5;
   }
