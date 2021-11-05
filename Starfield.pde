@@ -14,6 +14,7 @@ void setup() {
 }
 void draw() {
   background(0);
+  interfc();
   if (level == 1) { 
     level1();
   }
@@ -38,7 +39,6 @@ void interfc() {
   text("TARGET", 1070, 60);
 }
 void level1() {
-  interfc();
   if(gotInit == false) {
     init(10,0,0);
     gotInit = true;
@@ -58,8 +58,8 @@ void level1() {
     bol[i].show();
   }
 }
+
 void level2() {
-  interfc();
   if(gotInit == false) {
     init(3,4,0);
     gotInit = true;
@@ -69,22 +69,24 @@ void level2() {
     if (rand == 0) { 
       num = (int)(Math.random()*bol.length);
       TargetID = bol[num].myID;
-      boll = true;
     }
     if (rand == 1) { 
       num = (int)(Math.random()*rect.length);
       TargetID = rect[num].myID;
-      rec = true;
     }
     hasTarget = true;
   }
-  if(boll == true) {
-    fill(bol[num].myColor);
-    ellipse(1100,75,30,30);
+  for(int i = 0; i < bol.length; i++){
+    if(TargetID == bol[i].myID) { 
+      fill(bol[i].myColor);
+      ellipse(1100,110,60,60);
+    }
   }
-  if(rec == true) {
-    fill(rect[num].myColor);
-    ellipse(1100,76,30,30);
+  for(int i = 0; i < rect.length; i++){
+    if(TargetID == rect[i].myID) {
+      fill(rect[i].myColor);
+      rect(1100,110,60,60);
+    }
   }
   for (int i = 0; i < bol.length; i++) {
     bol[i].checker();
@@ -126,6 +128,7 @@ class parent {
       if (mouseX > myX - 15 && mouseX < myX + 15 && mouseY > myY - 15 && mouseY < myY + 15) {
         if (TargetID == myID) {
           gotInit = false;
+          hasTarget = false;
           level++;
         }
       }
