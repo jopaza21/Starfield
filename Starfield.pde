@@ -1,6 +1,6 @@
 parent [] bol;
 square [] rect;
-tringle [] tri;
+tringle [] tri; //
 float r, TargetID;
 boolean hasTarget = false;
 boolean gotInit = false;
